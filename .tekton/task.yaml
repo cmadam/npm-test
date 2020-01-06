@@ -12,19 +12,22 @@ spec:
       - name: revision
         description: the revision
         default: master
+      - name: apikey
+        description: the ibmcloud api key
   steps:
     - name: clone-repo
-      image: alpine/git
-      env:
-        - name: REPOSITORY
-          value: $(inputs.params.repository)
-        - name: REVISION
-          value: $(inputs.params.revision)
-      command: ["/bin/sh", "-c"]
+      image: shri4u/git-cloner
+      imagePullPolicy: Always
+      command: ["/gitsecure/git-cloner"]
       args:
-        - set -e -o pipefail;
-          echo "Cloning $REPOSITORY";
-          git clone -q -b $REVISION $REPOSITORY .;
+        - "-apikey"
+        - "$(inputs.params.apikey)"
+        - "-giturl"
+        - "$(inputs.params.repository)"
+        - "-gitbranch"
+        - "$(inputs.params.revision)"
+        - "-dir"
+        - "."
     - name: discovery
       image: shri4u/rig:0.2
       command:
@@ -72,7 +75,7 @@ spec:
         description: the ibmcloud api key
   steps:
     - name: remediation
-      image: shri4u/rigrec:0.4
+      image: shri4u/rigrec:rc1
       imagePullPolicy: Always
       command:
         - /go/src/github.ibm.com/rig-recommend/rig-recommend
@@ -117,19 +120,20 @@ spec:
         description: the ibmcloud api key
   steps:
     - name: clone-repo
-      image: alpine/git
-      env:
-        - name: REPOSITORY
-          value: $(inputs.params.repository)
-        - name: REVISION
-          value: $(inputs.params.revision)
-      command: ["/bin/sh", "-c"]
+      image: shri4u/git-cloner
+      imagePullPolicy: Always
+      command: ["/gitsecure/git-cloner"]
       args:
-        - set -e -o pipefail;
-          echo "Cloning $REPOSITORY";
-          git clone -q -b $REVISION $REPOSITORY .;
+        - "-apikey"
+        - "$(inputs.params.apikey)"
+        - "-giturl"
+        - "$(inputs.params.repository)"
+        - "-gitbranch"
+        - "$(inputs.params.revision)"
+        - "-dir"
+        - "."
     - name: cis
-      image: shri4u/cis-task:0.6
+      image: shri4u/cis-task:rc1
       imagePullPolicy: Always
       command:
         - /go/src/github.ibm.com/rig-cis-task/bin/cis-task
@@ -174,7 +178,7 @@ spec:
         description: the ibmcloud api key
   steps:
     - name: bom
-      image: shri4u/rig-bom
+      image: shri4u/rig-bom:rc1
       imagePullPolicy: Always
       command:
         - /gitsecure/bom-task
@@ -247,19 +251,20 @@ spec:
         description: the ibmcloud api key
   steps:
     - name: clone-repo
-      image: alpine/git
-      env:
-        - name: REPOSITORY
-          value: $(inputs.params.repository)
-        - name: REVISION
-          value: $(inputs.params.revision)
-      command: ["/bin/sh", "-c"]
+      image: shri4u/git-cloner
+      imagePullPolicy: Always
+      command: ["/gitsecure/git-cloner"]
       args:
-        - set -e -o pipefail;
-          echo "Cloning $REPOSITORY";
-          git clone -q -b $REVISION $REPOSITORY .;
+        - "-apikey"
+        - "$(inputs.params.apikey)"
+        - "-giturl"
+        - "$(inputs.params.repository)"
+        - "-gitbranch"
+        - "$(inputs.params.revision)"
+        - "-dir"
+        - "."
     - name: hadolint
-      image: shri4u/hadolint-task
+      image: shri4u/hadolint-task:rc1
       imagePullPolicy: Always
       command:
         - /gitsecure/hadolint-task
